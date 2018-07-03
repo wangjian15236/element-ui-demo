@@ -15,12 +15,12 @@ export const importAll = (r, type) => {
     const page = r(url).default;
 
     if (type === 'router') {
-      if (!page.path) throw new Error(`${url} need to set path options`);
-      if (!page.name) throw new Error(`${url} need to set name options`);
+      if (!page.router.path) throw new Error(`${url} need to set path options`);
+      if (!page.router.name) throw new Error(`${url} need to set name options`);
 
       list.push({
-        path: page.path,
-        name: page.name,
+        path: page.router.path,
+        name: page.router.name,
         component: page
       });
     }
@@ -29,6 +29,36 @@ export const importAll = (r, type) => {
       list[page.namespace] = page;
     }
   });
-
   return list;
 };
+
+const getModulesArray = modules => {
+  let arr = [];
+  modules.keys().forEach(url => arr.push(modules(url).default));
+  return arr;
+};
+
+export const importRouter = modules => {
+  let arr = [];
+  console.log(getModulesArray(modules))
+  getModulesArray(modules).map(module => {
+    const path = module.__file.replace('src', '@');
+    console.log(path);
+    arr.push({
+      ...module.routers,
+      component: () => require.ensure([], () => require('@/views/Dashboard/Analysis/index.vue').default)
+    });
+  });
+
+  return arr;
+};
+
+
+export const test = {
+  routes: [{
+    name: 'analysis',
+    path: '/dashboard/analysis',
+    alias: '/',
+    component: () => import('@/views/Dashboard/Analysis/index.vue')
+  }]
+}

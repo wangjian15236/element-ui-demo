@@ -98,8 +98,12 @@ import {
 import { mapState } from 'vuex';
 
 export default {
+  routers: {
+    name: 'analysis',
+    path: '/dashboard/analysis',
+    alias: '/'
+  },
   name: 'Analysis',
-  path: '/dashboard/analysis',
   components: {
     ChartCard,
     MapCard,
